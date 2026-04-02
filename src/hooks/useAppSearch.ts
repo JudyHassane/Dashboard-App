@@ -30,6 +30,7 @@ export const useAppSearch = () => {
     const loadSuggestions = async () => {
       if (headerSearch.trim().length < SEARCH_CONFIG.minChars) {
         setSuggestions([]);
+        setShowSuggestions(false);
         return;
       }
 
