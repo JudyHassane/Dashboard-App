@@ -1,1 +1,1 @@
-export const refreshTokens: string[] = [];
+export const refreshTokens = new Map<string, string>();
