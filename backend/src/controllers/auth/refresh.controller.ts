@@ -2,7 +2,6 @@ import { Response } from "express";
 import { generateAccessToken } from "../../utils/jwt";
 import { RefreshRequest } from "../../types/auth.types";
 
-// REFRESH
 export const refresh = (req: RefreshRequest, res: Response) => {
   const userId = req.userId!;
 

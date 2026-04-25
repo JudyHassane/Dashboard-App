@@ -3,7 +3,6 @@ import { RefreshRequest } from "../../types/auth.types";
 import { refreshTokens } from "../../services/auth/auth.service";
 import { ENV } from "../../config/env";
 
-// LOGOUT
 export const logout = (req: RefreshRequest, res: Response) => {
   const tokenId = req.refreshToken;
 

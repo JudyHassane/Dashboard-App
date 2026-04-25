@@ -1,11 +1,10 @@
 import { Response } from "express";
 import { AuthRequest } from "../../types/auth.types";
-import { User } from "../../models/users/user.model";
+import { User } from "../../orm/entities/users/user.entity";
 import { AppDataSource } from "../../orm/config/ormconfig";
-import { asyncHandler } from "../../utils/response/asyncHandler";
-import { NotFoundError } from "../../utils/response/errors/CustomError";
+import { asyncHandler } from "../../utils/asyncHandler";
+import { NotFoundError } from "../../utils/errors/CustomError";
 
-// GET my profile
 export const getMe = asyncHandler(async (req: AuthRequest, res: Response) => {
   const userRepository = AppDataSource.getRepository(User);
 
