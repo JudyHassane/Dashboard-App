@@ -1,7 +1,6 @@
 import Joi from "joi";
 import { validator } from "../../validator";
 
-// LOGIN schema
 const loginSchema = Joi.object({
   email: Joi.string().trim().email().lowercase().max(254).required().messages({
     "any.required": "Email is required",

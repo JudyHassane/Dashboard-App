@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomError } from "../utils/response/errors/CustomError";
-import { isDatabaseError } from "../utils/response/errors/DatabaseError";
+import { CustomError } from "../utils/errors/CustomError";
+import { isDatabaseError } from "../utils/errors/DatabaseError";
 import jwt from "jsonwebtoken";
 
 // Express call this middleware when next(error) is called
 
-// Centralized error handler — registered as the LAST middleware in app.ts
+// Centralized error handler
 export const errorHandler = (
   err: unknown,
   _req: Request,
@@ -19,11 +19,11 @@ export const errorHandler = (
 
   // JWT Error
   if (err instanceof jwt.TokenExpiredError) {
-    return res.status(403).json({ message: "Refresh token expired" });
+    return res.status(401).json({ message: "Token expired" });
   }
 
   if (err instanceof jwt.JsonWebTokenError) {
-    return res.status(403).json({ message: "Invalid refresh token" });
+    return res.status(403).json({ message: "Invalid token" });
   }
 
   // Database Error

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "../../../orm/config/ormconfig";
-import { User } from "../../../models/users/user.model";
-import { ConflictError } from "../../../utils/response/errors/CustomError";
-import { asyncHandler } from "../../../utils/response/asyncHandler";
+import { User } from "../../../orm/entities/users/user.entity";
+import { ConflictError } from "../../../utils/errors/CustomError";
+import { asyncHandler } from "../../../utils/asyncHandler";
 
 export const checkEmailExists = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction) => {

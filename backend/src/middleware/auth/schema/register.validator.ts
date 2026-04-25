@@ -1,7 +1,6 @@
 import Joi from "joi";
 import { validator } from "../../validator";
 
-// REGISTER schema
 const registerSchema = Joi.object({
   name: Joi.string().trim().min(3).max(50).required().messages({
     "any.required": "Name is required",

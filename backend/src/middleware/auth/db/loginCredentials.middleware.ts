@@ -1,9 +1,9 @@
 import { Response, NextFunction } from "express";
 import { AppDataSource } from "../../../orm/config/ormconfig";
-import { User } from "../../../models/users/user.model";
+import { User } from "../../../orm/entities/users/user.entity";
 import { comparePassword } from "../../../services/auth/auth.service";
-import { BadRequestError } from "../../../utils/response/errors/CustomError";
-import { asyncHandler } from "../../../utils/response/asyncHandler";
+import { BadRequestError } from "../../../utils/errors/CustomError";
+import { asyncHandler } from "../../../utils/asyncHandler";
 import { LoginRequest } from "../../../types/auth.types";
 
 export const validateLoginCredentials = asyncHandler(

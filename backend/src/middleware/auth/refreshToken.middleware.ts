@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import {
   UnauthorizedError,
   ForbiddenError,
-} from "../../utils/response/errors/CustomError";
+} from "../../utils/errors/CustomError";
 import { refreshTokens } from "../../services/auth/auth.service";
 import { RefreshRequest } from "../../types/auth.types";
 
