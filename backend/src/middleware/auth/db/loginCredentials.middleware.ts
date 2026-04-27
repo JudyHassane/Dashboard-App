@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { AppDataSource } from "../../../orm/config/ormconfig";
 import { User } from "../../../orm/entities/users/user.entity";
-import { comparePassword } from "../../../services/auth/auth.service";
+import { authService } from "../../../services/auth/auth.service";
 import { BadRequestError } from "../../../utils/errors/CustomError";
 import { asyncHandler } from "../../../utils/asyncHandler";
 import { LoginRequest } from "../../../types/auth.types";
@@ -18,7 +18,7 @@ export const validateLoginCredentials = asyncHandler(
       throw new BadRequestError("Invalid credentials");
     }
 
-    const isMatch = await comparePassword(password, user.password);
+    const isMatch = await authService.comparePassword(password, user.password);
 
     if (!isMatch) {
       throw new BadRequestError("Invalid credentials");

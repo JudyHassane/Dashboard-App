@@ -1,15 +1,12 @@
 import { Response } from "express";
-import {
-  issueTokens,
-  setRefreshTokenCookie,
-} from "../../services/auth/auth.service";
 import { LoginRequest } from "../../types/auth.types";
+import { authService } from "../../services/auth/auth.service";
 
 export const login = async (req: LoginRequest, res: Response) => {
   const user = req.user!;
 
-  const { accessToken, refreshToken } = await issueTokens(user.id);
-  setRefreshTokenCookie(res, refreshToken);
+  const { accessToken, refreshToken } = await authService.issueTokens(user.id);
+  authService.setRefreshTokenCookie(res, refreshToken);
 
   return res.json({
     user: {

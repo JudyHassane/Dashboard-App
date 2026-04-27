@@ -6,7 +6,7 @@ import {
   UnauthorizedError,
   ForbiddenError,
 } from "../../utils/errors/CustomError";
-import { refreshTokens } from "../../services/auth/auth.service";
+import { authService } from "../../services/auth/auth.service";
 import { RefreshRequest } from "../../types/auth.types";
 
 // Validate the refresh token before allowing access to the /refresh controller.
@@ -28,7 +28,7 @@ export const validateRefreshToken = async (
   };
 
   // Check if the refresh token exists in storage
-  const storedHash = refreshTokens.get(refreshTokenPayload.jti);
+  const storedHash = authService.refreshTokens.get(refreshTokenPayload.jti);
   if (!storedHash) {
     throw new ForbiddenError("Invalid refresh token");
   }

@@ -4,32 +4,44 @@ import { ENV } from "../../config/env";
 import ms from "ms";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 
-// Password utilities
-export const hashPassword = (plain: string) => bcrypt.hash(plain, 10);
+class AuthService {
+  // In-memory store for refresh tokens (tokenId -> hashedToken)
+  public refreshTokens = new Map<string, string>();
 
-export const comparePassword = (plain: string, hashed: string) =>
-  bcrypt.compare(plain, hashed);
+  // Password utilities
+  async hashPassword(plain: string): Promise<string> {
+    return bcrypt.hash(plain, 10);
+  }
 
-// In-memory store for refresh tokens (tokenId -> hashedToken)
-export const refreshTokens = new Map<string, string>();
+  async comparePassword(plain: string, hashed: string): Promise<boolean> {
+    return bcrypt.compare(plain, hashed);
+  }
 
-// Sets refresh token cookie
-export const setRefreshTokenCookie = (res: Response, refreshToken: string) => {
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: ENV.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: ms(ENV.REFRESH_TOKEN_EXPIRATION),
-  });
-};
+  // Sets refresh token cookie
+  setRefreshTokenCookie(res: Response, refreshToken: string): void {
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: ms(ENV.REFRESH_TOKEN_EXPIRATION),
+    });
+  }
 
-// Generates access and refresh tokens and stores hashed refresh token server-side
-export const issueTokens = async (userId: number) => {
-  const accessToken = generateAccessToken(userId);
+  // Generates access + refresh tokens and stores hashed refresh token server-side
+  async issueTokens(userId: number): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
+    const accessToken = generateAccessToken(userId);
+    const { token: refreshToken, tokenId } = generateRefreshToken(userId);
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+    this.refreshTokens.set(tokenId, hashedToken);
 
-  const { token: refreshToken, tokenId } = generateRefreshToken(userId);
-  const hashedToken = await bcrypt.hash(refreshToken, 10);
-  refreshTokens.set(tokenId, hashedToken);
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+}
 
-  return { accessToken, refreshToken };
-};
+export const authService = new AuthService();

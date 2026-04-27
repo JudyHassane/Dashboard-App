@@ -1,13 +1,13 @@
 import { Response } from "express";
 import { RefreshRequest } from "../../types/auth.types";
-import { refreshTokens } from "../../services/auth/auth.service";
+import { authService } from "../../services/auth/auth.service";
 import { ENV } from "../../config/env";
 
 export const logout = (req: RefreshRequest, res: Response) => {
   const tokenId = req.refreshToken;
 
   if (tokenId) {
-    refreshTokens.delete(tokenId);
+    authService.refreshTokens.delete(tokenId);
   }
 
   res.clearCookie("refreshToken", {
