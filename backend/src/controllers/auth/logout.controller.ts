@@ -17,5 +17,5 @@ export const logout = (req: RefreshRequest, res: Response) => {
     path: "/",
   });
 
-  return res.json({ message: "Logged out successfully" });
+  return res.customSuccess(200, "Logged out successfully");
 };

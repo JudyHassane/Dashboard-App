@@ -3,7 +3,7 @@ import { AuthRequest } from "../../types/auth.types";
 import { User } from "../../orm/entities/users/user.entity";
 import { AppDataSource } from "../../orm/config/ormconfig";
 import { asyncHandler } from "../../utils/asyncHandler";
-import { NotFoundError } from "../../utils/errors/CustomError";
+import { NotFoundError } from "../../utils/response/custom-error/CustomError";
 
 export const getMe = asyncHandler(async (req: AuthRequest, res: Response) => {
   const userRepository = AppDataSource.getRepository(User);
@@ -13,9 +13,11 @@ export const getMe = asyncHandler(async (req: AuthRequest, res: Response) => {
     throw new NotFoundError("User not found");
   }
 
-  return res.json({
-    id: user.id,
-    name: user.name,
-    email: user.email,
+  return res.customSuccess(200, "User retrieved successfully", {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    },
   });
 });

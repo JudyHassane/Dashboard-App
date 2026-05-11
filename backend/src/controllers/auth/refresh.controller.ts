@@ -7,5 +7,7 @@ export const refresh = (req: RefreshRequest, res: Response) => {
 
   const newAccessToken = generateAccessToken(userId);
 
-  return res.json({ accessToken: newAccessToken });
+  return res.customSuccess(200, "Token refreshed successfully.", {
+    accessToken: newAccessToken,
+  });
 };
