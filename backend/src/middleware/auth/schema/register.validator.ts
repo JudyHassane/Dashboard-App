@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validator } from "../../validator";
+import { validator } from "../../common/validator";
 
 const registerSchema = Joi.object({
   name: Joi.string().trim().min(3).max(50).required(),

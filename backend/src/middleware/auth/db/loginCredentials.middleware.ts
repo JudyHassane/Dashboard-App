@@ -2,7 +2,7 @@ import { Response, NextFunction } from "express";
 import { AppDataSource } from "../../../orm/config/ormconfig";
 import { User } from "../../../orm/entities/users/user.entity";
 import { authService } from "../../../services/auth/auth.service";
-import { BadRequestError } from "../../../utils/errors/CustomError";
+import { BadRequestError } from "../../../utils/response/custom-error/CustomError";
 import { asyncHandler } from "../../../utils/asyncHandler";
 import { LoginRequest } from "../../../types/auth.types";
 
@@ -26,6 +26,6 @@ export const validateLoginCredentials = asyncHandler(
 
     req.user = user;
 
-    return next();
+    next();
   },
 );

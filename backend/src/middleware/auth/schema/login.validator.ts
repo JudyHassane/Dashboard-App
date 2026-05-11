@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validator } from "../../validator";
+import { validator } from "../../common/validator";
 
 const loginSchema = Joi.object({
   email: Joi.string().trim().email().lowercase().max(254).required(),
