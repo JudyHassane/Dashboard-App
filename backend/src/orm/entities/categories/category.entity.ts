@@ -1,0 +1,13 @@
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Book } from "../books/book.entity";
+
+@Entity()
+export class Category {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column({ type: "varchar", unique: true })
+  name!: string;
+
+  @OneToMany(() => Book, (book) => book.category) books!: Book[];
+}
