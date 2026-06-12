@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   BeforeInsert,
   BeforeUpdate,
   ManyToOne,
@@ -55,6 +56,9 @@ export class Book {
 
   @CreateDateColumn()
   dateAdded!: Date;
+
+  @DeleteDateColumn()
+  deletedAt!: Date | null;
 
   @BeforeInsert()
   @BeforeUpdate()
