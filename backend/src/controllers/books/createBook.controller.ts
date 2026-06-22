@@ -5,6 +5,8 @@ import { Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { Category } from "../../orm/entities/categories/category.entity";
 import { Author } from "../../orm/entities/authors/author.entity";
+import { ActivityAction } from "../../orm/entities/activity-logs/enums";
+import { logActivity } from "../../utils/logActivity";
 
 export const createBook = asyncHandler(
   async (req: BookRequest, res: Response) => {
@@ -51,6 +53,13 @@ export const createBook = asyncHandler(
       author: bookAuthor,
     });
     const savedBook = await bookRepository.save(newBook);
+
+    await logActivity({
+      action: ActivityAction.BOOK_CREATED,
+      message: `Book "${savedBook.title}" added successfully`,
+      entityId: savedBook.id,
+      userId: req.userId,
+    });
 
     return res.customSuccess(201, "Book created successfully", {
       book: savedBook,
