@@ -2,23 +2,24 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { tokenService } from "../services/token.service";
 import type {
+  ApiSuccessResponse,
   RefreshResponse,
   RetryableRequestConfig,
 } from "../types/api.types";
 import { ENV } from "../config/env";
+import { extractApiError } from "../utils/api-error";
 
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
   baseURL: ENV.serverUrl,
   withCredentials: true,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 // Request Interceptor - Attach access token to every request
-
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = tokenService.getAccessToken();
@@ -93,8 +94,10 @@ axiosInstance.interceptors.response.use(
 
       try {
         const refreshResponse =
-          await axiosInstance.post<RefreshResponse>("/auth/refresh");
-        const newAccessToken = refreshResponse.data.accessToken;
+          await axiosInstance.post<ApiSuccessResponse<RefreshResponse>>(
+            "/auth/refresh",
+          );
+        const newAccessToken = refreshResponse.data.data.accessToken;
 
         if (!newAccessToken) {
           throw new Error("No access token returned from refresh");
@@ -117,11 +120,7 @@ axiosInstance.interceptors.response.use(
     }
 
     // Global Error Toast for all other error statuses
-    const message =
-      error?.response?.data?.errorMessage ||
-      error?.response?.data?.message ||
-      error?.message ||
-      "Something went wrong!";
+    const { message } = extractApiError(error, "Something went wrong!");
 
     // Silent endpoints — errors here are expected and normal, don't show a toast.
     const isSilentEndpoint =
