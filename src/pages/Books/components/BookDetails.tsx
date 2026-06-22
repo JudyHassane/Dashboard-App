@@ -7,7 +7,7 @@ import { getBook } from "../../../store/features/books/api";
 import { clearSelectedBook } from "../../../store/features/books/slice";
 import RawDetails from "../../../components/RawDetails";
 import Error from "../../../components/draft/Error";
-import Loading from "../../../components/draft/Loading";
+import Loading from "../../../components/Loading";
 import { detailsStyles as ds } from "../../../styles/detailsStyles";
 import { useImageSrc } from "../../../hooks/useImageSrc";
 
