@@ -1,13 +1,15 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useAuth } from "../pages/Auth/hooks/useAuth";
+
 import { cn } from "../utils/cn";
 import { ui } from "../styles/ui";
 import { AppSidebar } from "../components/AppSidebar";
 import { AppHeader } from "../components/AppHeader";
 import { Box, CircularProgress } from "@mui/material";
+import { useAppSelector } from "../store/features/hooks";
 
 export default function AppLayout() {
-  const { isAuthenticated, user, authStatus } = useAuth();
+  const { authStatus, user } = useAppSelector((state) => state.auth);
+  const isAuthenticated = authStatus === "authenticated";
 
   if (authStatus === "unknown") {
     return (
