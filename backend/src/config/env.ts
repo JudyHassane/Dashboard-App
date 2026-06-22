@@ -28,4 +28,5 @@ export const ENV = {
     "7d") as StringValue,
 
   FRONTEND_URL: process.env.FRONTEND_URL,
+  BACKEND_URL: process.env.BACKEND_URL,
 };
