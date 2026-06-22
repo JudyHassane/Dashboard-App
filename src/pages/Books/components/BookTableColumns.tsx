@@ -4,7 +4,7 @@ import type { Book } from "../../../types";
 import { booksStyles } from "../../../styles/booksStyles";
 import { formatDate } from "../../../utils/formatters";
 import { Pencil, Trash2 } from "lucide-react";
-import { getImageUrl } from "../../../utils/imageUrl";
+import { useImageSrc } from "../../../hooks/useImageSrc";
 
 const columnWidths = {
   cover: 86,
@@ -17,6 +17,23 @@ const columnWidths = {
   dateAdded: 140,
   actions: 105,
 } as const;
+
+const BookCoverCell = ({
+  coverImage,
+  alt,
+}: {
+  coverImage: string;
+  alt: string;
+}) => {
+  const src = useImageSrc(coverImage);
+  return (
+    <Box sx={booksStyles.coverImageFrame}>
+      {src && (
+        <Box component="img" src={src} alt={alt} sx={booksStyles.coverImage} />
+      )}
+    </Box>
+  );
+};
 
 const StatusChip = ({ status }: { status: string }) => {
   const isAvailable = status === "available";
@@ -42,18 +59,10 @@ export const getBooksColumns = (
     size: columnWidths.cover,
     enableSorting: false,
     cell: ({ row }) => (
-      <Box sx={booksStyles.coverImageFrame}>
-        <Box
-          component="img"
-          src={getImageUrl(row.original.coverImage)}
-          alt={row.original.title}
-          sx={booksStyles.coverImage}
-          onError={(event) => {
-            event.currentTarget.onerror = null;
-            event.currentTarget.src = "";
-          }}
-        />
-      </Box>
+      <BookCoverCell
+        coverImage={row.original.coverImage}
+        alt={row.original.title}
+      />
     ),
   },
 

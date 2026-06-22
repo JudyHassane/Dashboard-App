@@ -8,8 +8,8 @@ import { clearSelectedBook } from "../../../store/features/books/slice";
 import RawDetails from "../../../components/RawDetails";
 import Error from "../../../components/draft/Error";
 import Loading from "../../../components/draft/Loading";
-import { getImageUrl } from "../../../utils/imageUrl";
 import { detailsStyles as ds } from "../../../styles/detailsStyles";
+import { useImageSrc } from "../../../hooks/useImageSrc";
 
 const BookDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +19,8 @@ const BookDetails = () => {
   const { selectedBook, fetchBookStatus, error } = useAppSelector(
     (state) => state.books,
   );
+
+  const coverSrc = useImageSrc(selectedBook?.coverImage);
 
   useEffect(() => {
     if (id) {
@@ -83,12 +85,7 @@ const BookDetails = () => {
           />
         </>
       }
-      image={{
-        src: selectedBook.coverImage
-          ? getImageUrl(selectedBook.coverImage)
-          : "",
-        alt: selectedBook.title,
-      }}
+      image={{ src: coverSrc, alt: selectedBook.title }}
       description={selectedBook.description}
       metaItems={[
         { label: "Price", value: `$${Number(selectedBook.price).toFixed(2)}` },

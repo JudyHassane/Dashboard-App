@@ -19,7 +19,7 @@ import {
   type SubmitHandler,
 } from "react-hook-form";
 import { booksStyles } from "../../../styles/booksStyles";
-import { emptyBook, type Book } from "../../../types";
+import { type Book } from "../../../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   bookSchema,
@@ -47,9 +47,19 @@ interface BookFormDialogProps {
 
 const getDefaultValues = (book: Book | null): BookFormData => {
   if (!book) {
-    return { ...emptyBook };
+    return {
+      title: "",
+      author: "",
+      isbn: "",
+      description: "",
+      categoryName: "",
+      coverImage: "",
+      price: 0,
+      stock: 0,
+      imageMode: "url",
+    };
   }
-
+  const isUrl = /^https?:\/\//i.test(book.coverImage);
   return {
     title: book.title,
     author: book.author.name,
@@ -59,6 +69,7 @@ const getDefaultValues = (book: Book | null): BookFormData => {
     coverImage: book.coverImage,
     price: book.price,
     stock: book.stock,
+    imageMode: isUrl ? "url" : "upload",
   };
 };
 
@@ -68,6 +79,9 @@ const preventNegativeValues = (e: React.FormEvent<HTMLDivElement>) => {
     input.value = "0";
   }
 };
+
+const ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const BookFormDialog = ({
   type: formType,
@@ -87,8 +101,10 @@ const BookFormDialog = ({
     control,
     formState: { errors, isSubmitting, isDirty, isValid },
     setValue,
+    setError,
+    clearErrors,
   } = useForm<BookFormData>({
-    defaultValues: emptyBook,
+    defaultValues: getDefaultValues(selectedBook),
     resolver: zodResolver(bookSchema) as Resolver<BookFormData>,
     mode: "onChange",
   });
@@ -98,7 +114,8 @@ const BookFormDialog = ({
   const isSubmitDisabled =
     isSubmitLoading || (isAdd ? !isValid : !isDirty || !isValid);
 
-  const [imageMode, setImageMode] = useState<"upload" | "url">("url");
+  const imageMode = useWatch({ control, name: "imageMode" });
+
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -118,7 +135,7 @@ const BookFormDialog = ({
 
   const onSubmit: SubmitHandler<BookFormData> = async (data) => {
     try {
-      const bookData = { ...data };
+      const { imageMode, ...bookData } = data;
 
       if (imageMode === "upload" && selectedFile) {
         const uploadResult = await dispatch(
@@ -145,6 +162,7 @@ const BookFormDialog = ({
       //
     }
   };
+
   const [categorySearch, setCategorySearch] = useState("");
   const debouncedCategorySearch = useDebounce(categorySearch);
 
@@ -156,20 +174,46 @@ const BookFormDialog = ({
   );
 
   useEffect(() => {
-    if (open) {
+    if (debouncedCategorySearch) {
       loadCategories(debouncedCategorySearch, 1);
     }
-  }, [debouncedCategorySearch, open, loadCategories]);
+  }, [debouncedCategorySearch, loadCategories]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      setSelectedFile(file);
-      setValue("coverImage", file.name, { shouldValidate: true });
+
+    if (!file) return;
+
+    if (!ALLOWED_MIME_TYPES.has(file.type)) {
+      setError("coverImage", {
+        type: "manual",
+        message: "Only JPG, PNG, and WEBP images are allowed",
+      });
+      e.target.value = "";
+      return;
     }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setError("coverImage", {
+        type: "manual",
+        message: "Image must be smaller than 5MB",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    clearErrors("coverImage");
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+    setSelectedFile(file);
+    setValue("coverImage", file.name, { shouldValidate: true });
   };
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
 
   return (
     <FormDialog
@@ -320,10 +364,16 @@ const BookFormDialog = ({
           exclusive
           onChange={(_e, newMode) => {
             if (newMode) {
-              setImageMode(newMode);
+              setValue("imageMode", newMode, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
               setImagePreview(null);
               setSelectedFile(null);
-              setValue("coverImage", "");
+              setValue("coverImage", "", {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
             }
           }}
           size="small"

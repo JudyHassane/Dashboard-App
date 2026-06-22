@@ -75,10 +75,10 @@ const BookTable = () => {
   );
 
   useEffect(() => {
-    if (debouncedCategorySearch.trim() !== "" || categorySearch === "") {
+    if (debouncedCategorySearch.trim() !== "") {
       loadCategories(debouncedCategorySearch, 1);
     }
-  }, [debouncedCategorySearch, categorySearch, loadCategories]);
+  }, [debouncedCategorySearch, loadCategories]);
 
   const columns = useMemo(
     () => getBooksColumns(openDialog, openDeleteDialog),
