@@ -24,7 +24,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { booksStyles } from "../styles/booksStyles";
 import SelectMenu from "./SelectMenu";
 import SearchInput from "./SearchInput";
-import Loading from "./draft/Loading";
+import Loading from "./Loading";
 
 type SearchConfig = {
   value: string;
