@@ -9,7 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import AuthInput from "./AuthInput";
 import { authStyles } from "../../../styles/authStyles";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 import {
   registerSchema,
@@ -67,7 +67,7 @@ export default function AuthForm({ mode, title, subtitle }: AuthFormProps) {
 
       navigate("/");
     } catch {
-      // Error toast is handled globally by axios
+      //
     }
   };
 
@@ -97,14 +97,16 @@ export default function AuthForm({ mode, title, subtitle }: AuthFormProps) {
 
   return (
     <div>
-      {/* Form Header */}
       <div className={authStyles.form.header}>
         <h2 className={authStyles.form.title}>{title}</h2>
         <p className={authStyles.form.subtitle}>{subtitle}</p>
       </div>
 
-      {/* Auth Form */}
-      <form className={authStyles.form.form} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={authStyles.form.form}
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
         <div className={authStyles.form.fieldsWrapper}>
           {isRegister && (
             <AuthInput
