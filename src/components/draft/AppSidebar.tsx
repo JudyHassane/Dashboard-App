@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
 import { Tooltip } from "@mui/material";
 import { LogOut } from "lucide-react";
-import { cn } from "../utils/cn";
-import { ui } from "../styles/ui";
-import { NAV_ITEMS, TOOLTIP_PROPS } from "../constants/appConfig";
-import { useAppDispatch } from "../store/features/hooks";
-import { logoutUser } from "../store/features/auth/api";
+import { cn } from "../../utils/cn";
+import { ui } from "../../styles/ui";
+import { NAV_ITEMS, TOOLTIP_PROPS } from "../../constants/appConfig";
+import { useAppDispatch } from "../../store/features/hooks";
+import { logoutUser } from "../../store/features/auth/api";
 import { toast } from "react-toastify";
 
 const NAV_BUTTON_STYLE =

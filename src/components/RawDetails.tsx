@@ -38,15 +38,17 @@ const BackButton = ({ label, onClick }: BackButtonProps) => (
 
 const CoverImage = ({ src, alt }: CoverImageProps) => (
   <div className={s.coverFrame}>
-    <img
-      src={src || ""}
-      alt={alt}
-      className={s.coverImage}
-      onError={(event) => {
-        event.currentTarget.onerror = null;
-        event.currentTarget.src = "";
-      }}
-    />
+    {src && (
+      <img
+        src={src}
+        alt={alt}
+        className={s.coverImage}
+        onError={(event) => {
+          event.currentTarget.onerror = null;
+          event.currentTarget.src = "";
+        }}
+      />
+    )}
   </div>
 );
 

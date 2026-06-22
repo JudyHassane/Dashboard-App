@@ -145,18 +145,17 @@ const DataTable = <TData,>({
   return (
     <>
       <Box sx={booksStyles.tableCard}>
+        <Box sx={booksStyles.tableHeaderContainer}>
+          {searchConfig && (
+            <SearchInput
+              value={searchConfig.value}
+              onChange={searchConfig.onChange}
+              placeholder={searchConfig.placeholder}
+              sx={booksStyles.tableSearchField}
+            />
+          )}
+        </Box>
         <TableContainer sx={booksStyles.tableContainer}>
-          <Box sx={booksStyles.tableHeaderContainer}>
-            {searchConfig && (
-              <SearchInput
-                value={searchConfig.value}
-                onChange={searchConfig.onChange}
-                placeholder={searchConfig.placeholder}
-                sx={booksStyles.tableSearchField}
-              />
-            )}
-          </Box>
-
           <Table stickyHeader aria-label="books table" sx={booksStyles.table}>
             <TableHead>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -175,6 +174,7 @@ const DataTable = <TData,>({
                         sx={{
                           width: header.column.columnDef.size,
                           cursor: canSort ? "pointer" : "default",
+                          backgroundColor: "background.paper",
                         }}
                       >
                         <Box
