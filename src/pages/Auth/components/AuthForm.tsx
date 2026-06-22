@@ -3,14 +3,10 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
-
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
-
 import AuthInput from "./AuthInput";
 import { authStyles } from "../../../styles/authStyles";
-import { useAuth } from "../hooks/useAuth";
-
 import {
   registerSchema,
   type RegisterFormData,
@@ -22,6 +18,9 @@ import {
 } from "../../../validationSchemas/login.schema";
 
 import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../../store/features/hooks";
+import { loginUser, registerUser } from "../../../store/features/auth/api";
+import { clearError } from "../../../store/features/auth/slice";
 
 type AuthMode = "login" | "register";
 
@@ -36,15 +35,18 @@ type AuthFormData = RegisterFormData | LoginFormData;
 export default function AuthForm({ mode, title, subtitle }: AuthFormProps) {
   const isRegister = mode === "register";
 
-  const { login, registerAccount, clearError, isLoading } = useAuth();
+  const dispatch = useAppDispatch();
+  const { actionStatus } = useAppSelector((state) => state.auth);
+  const isLoading = actionStatus === "loading";
+
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
-    clearError();
-  }, [clearError]);
+    dispatch(clearError());
+  }, [dispatch]);
 
   const {
     register,
@@ -58,10 +60,10 @@ export default function AuthForm({ mode, title, subtitle }: AuthFormProps) {
   const onSubmit: SubmitHandler<AuthFormData> = async (data) => {
     try {
       if (isRegister) {
-        await registerAccount(data as RegisterFormData);
+        await dispatch(registerUser(data as RegisterFormData)).unwrap();
         toast.success("Registration successful!");
       } else {
-        await login(data as LoginFormData);
+        await dispatch(loginUser(data as LoginFormData)).unwrap();
         toast.success("Successfully logged in!");
       }
 
